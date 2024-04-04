@@ -1,7 +1,7 @@
 
-TRT = load('Test4.txt');
+TRT = load('Test.txt');
 %Input Sample Thickness below:
-ySample = 0.00126; %Thickness of sample in m
+ySample = 0.0000; %Thickness of sample in metres
 
 %pulling data from MATLAB workspace file
 Data = TRT;
