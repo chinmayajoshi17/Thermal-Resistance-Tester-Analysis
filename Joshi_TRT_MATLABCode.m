@@ -9,9 +9,9 @@ distance between each point for distances = 1E-06
 %Use 'clear' and 'clc' commands after every run
 
 %Input Test Data Filename below:
-TestDataFilename = 'TRT-004'; %Test data filenames are saved as TRT-00X
+TestDataFilename = 'TRT-005'; %Test data filenames are saved as TRT-00X
 %Input Sample Thickness below:
-ySample = 0.00126; %Thickness of sample in m
+ySample = 0.00500; %Thickness of sample in m
 ySampleLine = linspace(0,ySample, ySample * 10^6);
 
 %Analysis Code Starts:
@@ -112,7 +112,9 @@ slopeSample = (HTL(1,36000) - CTL(1,36000))/ySample;
 sampleTemps = slopeSample.*ySampleLine + CTL(1,36000);
 
 totalLength = (2 * 0.0360) + ySample;
-experimentalLength = linspace(0,0.073260,73260);
+experimentalLength = linspace(0,totalLength,totalLength*10^6);
+setupPoints = 36000*2 + totalLength*10^6;
+setupLength = setupPoints/10^6;
 
 HTLsize = size(HTL,2); %
 CTLsize = size(CTL,2); %
@@ -121,6 +123,7 @@ Thot = HTL(1,HTLsize);
 Tcold = CTL(1,CTLsize);
 
 temperatures = [CTL sampleTemps reversedHTL];
+
 
 
 %Final calculations
@@ -185,18 +188,18 @@ plot(experimentalLength,temperatures);
 hold on
 plot(experimentalLength,temperatures,'-x','MarkerIndices', 36000);
 hold on
-plot(experimentalLength,temperatures,'-x','MarkerIndices', 37260);
+plot(experimentalLength,temperatures,'-x','MarkerIndices', 36000 + ySample*10^6);
 hold on
 plot(experimentalLength, temperatures,'-s','MarkerIndices', [4392, 18000, 31572]);
 hold on
-plot(experimentalLength, temperatures,'-s','MarkerIndices', [41652, 55260, 68832]);
+plot(experimentalLength, temperatures,'-s','MarkerIndices', [36000 + ySample*10^6 + 4392, 36000 + ySample*10^6 + 18000, 36000 + ySample*10^6 + 31572]);
 hold on
 xline(0.036000,'--b'); %{'Graphite Cold Surface Temperature'}
 hold on
-xline(0.037260,'--b'); %{'Graphite Hot Surface Temperature'}
+xline((0.036000 + ySample),'--b'); %{'Graphite Hot Surface Temperature'}
 yticks(linspace(10,120,12));
 ylim([10 120]);
-xlim([0 0.073260]);
+xlim([0 totalLength]);
 grid on;
 title(TestDataFilename,'Temperatures Across Test Setup');
 xlabel('Location on Tester (m)');
@@ -207,4 +210,3 @@ disp("Temperature Gradient over Hot Side is " + abs(Hslope) + " K/m");
 disp("Temperature Gradient over Cold Side is " + Cslope + " K/m");
 disp("Temperature Gradient over Sample is " + slopeSample + " K/m");
 disp("Thermal Resistance of the Graphite Sample is " + rGraphiteAreaCompensated + " m^2 K/W");
-
