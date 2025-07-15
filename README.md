@@ -1,24 +1,57 @@
-#README: Quantification and Mitigation of Uncertainties in Thermal Conductivity Measurements Using a Modified ASTM D5470 Thermal Resistance Tester
+**README: Modified ASTM D5470 Thermal Resistance Tester**
 
-Description of the data and file structure
-This dataset includes temperature measurements over time for 6 thermocouples for steady state analysis of thermal resistance and thermal conductivity of Pyrolytic Graphite and Titanium Grade 2. The temperature data is measured using OMEGA TJ36-CPSS-032G-3 T-type thermocouples with a 0.032” probe diameter connected to a NI-9210 Thermocouple DAQ with Spring Terminals, attached to a NI-cDAQ-9174 DAQ Chassis which is connected to a computer running Windows 10. Time data is sampled at 1000 Hz (every 1 ms), starting at 0 s and continuing until manually stopped. The data acquisition setup is used in the facility described in [INSERT PAPER NAME/LINK]. 
+**Paper Name: Quantification and Mitigation of Uncertainties in Thermal Conductivity Measurements Using a Modified ASTM D5470 Thermal Resistance Tester**
 
-Files and variables:
-File: DatasetsAndCode.zip
-Description: The zip file includes 2 folders, i.e. “DataForPaper” and “PythonCode” 
-DatasetsAndCode.zip  DataForPaper/PythonCode
+- **Sampling Rate:** 1000 Hz (1 ms interval), starting from 0 s  
+- **Thermocouples:** OMEGA TJ36-CPSS-032G-3 T-type, 0.032” probe diameter  
+- **DAQ:** NI-9210 with spring terminals + NI-cDAQ-9174 chassis  
 
-The “DataForPaper” folder further contains two folders, i.e., PG for the Pyrolytic Graphite data, and TiG2 for the Titanium Grade 2 data. 
-DataForPaper  PG/TiG2  WithTIM/NoTIM  Run X (X ∈ [1,2,3])  *.lvm
+Each material (PG, TiG2) contains:
+- `WithTIM/` – Measurements with thermal interface material applied  
+- `NoTIM/` – Measurements without TIM  
+- Each has `Run1/`, `Run2/`, `Run3/` folders with individual sample files  
+- PG: 9 samples -> 9 *.lvm files for each run
+- TiG2: 4 samples -> 4 *.lvm files for each run
 
-Each folder is then divided into sub-folders for “WithTIM” for datasets with TIMs applied, and “NoTIM” for datasets without any TIMs applied.
-Each “WithTIM” and “NoTIM” folder is then sub-divided into “Run1”, “Run2”, and “Run3” which contain the data for each material, i.e. 9 files for PG corresponding to the 9 PG samples, and 4 files for TiG2 corresponding to the 4 TiG2 samples.
-All the Data files are .lvm files with 23 lines of headers before the actual data starts. The data is divided into 7 columns delimited using “tabs” as follows: Time, Temperature at TC1, Temperature at TC2, Temperature at TC3, Temperature at TC4, Temperature at TC5, Temperature at TC6. Time is measured in seconds (s) and the temperature is measured in Celsius (oC).
+---
 
-The “PythonCode” folder contains multiple .ipynb files that are used for the steady state analysis, uncertainty analysis, thermal conductivity, and thermal resistance calculations.
-PythonCode  *.ipynb/*.py
+## Python Notebooks
 
-“SSCalc.ipynb” checks if the data collected has reached steady-state and compares the ΔT (change in temperature) with respect to time over a period of 120s or 2 minutes. It also checks the ΔT with respect to time over a period of 30s, 60s, and 180s to ensure that minor changes in T or sensor noise does not affect long term steady-state temperatures.
-“AnalysisCodeTRT.ipynb” requires a defined material, TIM state (With or No TIM), and the repeated “Run Number” for the tests in Cell 2 of the code. It outputs the measured thermal conductivity of the materials and the uncertainty in the thermal resistance measurements.
-“ScedasticityCheck.ipynb” uses the Uncertainty in each Thermal Resistance measurement from “AnalysisCodeTRT.ipynb” and the sample thicknesses to numerically check for homoscedasticity or heteroscedasticity in the data and visualize it using plots.
-“YorkRegression.ipynb” uses “YorkRegression.py”, a modified version of “fit_bivariate.py” by Mikko Pitkanen, to compare regular Least Squares Regression methods to York’s Regression mentioned in York et al. 2004 and provides thermal conductivity and uncertainty values based on York’s Regression.
+> All code is written in Python 3 using Jupyter notebooks.
+
+###  `SSCalc.ipynb`
+Checks if the system has reached steady-state by analyzing ΔT (temperature change) over 30s, 60s, 120s, and 180s intervals. This helps verify stability and considers noise or small drifts.
+
+###  `AnalysisCodeTRT.ipynb`
+- Inputs: `materialName`, `TIMstate`, `RunNum` (defined in Cell 2)
+- Outputs:  
+- Thermal conductivity (W/m·K) using data from a run
+- Uncertainty in thermal resistance (m²·K/W) for each test in a run
+
+###  `ScedasticityCheck.ipynb`
+Takes uncertainty values and sample thicknesses to numerically check for **Homoscedasticity** or **Heteroscedasticity** and visualizes the results.
+
+###  `YorkRegression.ipynb`
+Uses `YorkRegression.py`, a modified version of Mikko Pitkänen’s `fit_bivariate.py`, to compare:
+- Ordinary Least Squares (OLS)
+- **York’s Regression** (York et al., 2004)
+
+- `fit_bivariate.py` from https://gist.github.com/mikkopitkanen/ce9cd22645a9e93b6ca48ba32a3c85d0
+
+Outputs updated thermal conductivity and uncertainty values using York’s method to account for uncertainties in thickness measurement (x-axis) and thermal resistance measurement (y-axis).
+
+---
+
+To run the notebooks, install and import the following Python libraries:
+
+```bash
+pip install numpy
+pip install pandas
+pip install matplotlib
+pip install scipy
+pip install os
+pip install glob
+```
+
+
+---
