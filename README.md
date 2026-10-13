@@ -1,5 +1,8 @@
 **README: Modified ASTM D5470 Thermal Resistance Tester**
 
+Repository scope, evidence, and reuse boundaries are also available in the
+[NED3 resource manifest](.ned3/resource-manifest-v0.1.json).
+
 **Paper Name: Quantification and Mitigation of Uncertainties in Thermal Conductivity Measurements Using a Modified ASTM D5470 Thermal Resistance Tester**
 
 - **Sampling Rate:** 1000 Hz (1 ms interval), starting from 0 s  
